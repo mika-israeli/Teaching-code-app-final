@@ -124,7 +124,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.get("/", (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(__dirname + "../frontend/build/index.html"),
     function (err) {
       if (err) {
