@@ -123,7 +123,6 @@ io.on("connection", (socket) => {
     console.log("A user disconnected");
   });
 });
-
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "../frontend/build/index.html"),
     function (err) {
