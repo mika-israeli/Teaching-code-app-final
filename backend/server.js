@@ -14,7 +14,7 @@ const io = socketIO(server, {
   },
 });
 
-const PORT = 8000;
+const PORT = process.env.port || 8000;
 const MAX_STUDENTS_PER_CLASS = 1;
 
 // Store the socket id of the mentor connected to each code block
