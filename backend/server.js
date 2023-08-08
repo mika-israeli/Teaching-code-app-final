@@ -124,6 +124,15 @@ io.on("connection", (socket) => {
   });
 });
 
+server.get("/", (req, res) => {
+  res.sendFile(__dirname + "../frontend/build/index.html"),
+    function (err) {
+      if (err) {
+        res.status(500).send(err);
+      }
+    };
+});
+
 server.listen(PORT, async () => {
   try {
     console.log(`Server running on port ${PORT}`);
