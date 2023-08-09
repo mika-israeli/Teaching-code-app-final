@@ -6,48 +6,48 @@ const socketIO = require("socket.io");
 const codeRoutes = require("./routes/codeRouter");
 const cors = require("cors");
 const app = express();
-app.use(
-  cors({
-    origin: "*",
-  })
-);
 const server = http.createServer(app); //http server with express app
 const io = socketIO(server, {
   cors: {
     origin: "*",
   },
 });
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 const PORT = 8000;
 const MAX_STUDENTS_PER_CLASS = 1;
 
 const whitelist = ["*"];
 
-// app.use((req, res, next) => {
-//   const origin = req.get("referer");
-//   const isWhitelisted = whitelist.find((w) => origin && origin.includes(w));
-//   if (isWhitelisted) {
-//     res.setHeader("Access-Control-Allow-Origin", "*");
-//     res.setHeader(
-//       "Access-Control-Allow-Methods",
-//       "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-//     );
-//     res.setHeader(
-//       "Access-Control-Allow-Headers",
-//       "X-Requested-With,Content-Type,Authorization"
-//     );
-//     res.setHeader("Access-Control-Allow-Credentials", true);
-//   }
-//   // Pass to next layer of middleware
-//   if (req.method === "OPTIONS") res.sendStatus(200);
-//   else next();
-// });
+app.use((req, res, next) => {
+  const origin = req.get("referer");
+  const isWhitelisted = whitelist.find((w) => origin && origin.includes(w));
+  if (isWhitelisted) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-Requested-With,Content-Type,Authorization"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", true);
+  }
+  // Pass to next layer of middleware
+  if (req.method === "OPTIONS") res.sendStatus(200);
+  else next();
+});
 
-// const setContext = (req, res, next) => {
-//   if (!req.context) req.context = {};
-//   next();
-// };
-// app.use(setContext);
+const setContext = (req, res, next) => {
+  if (!req.context) req.context = {};
+  next();
+};
+app.use(setContext);
 
 // Store the socket id of the mentor connected to each code block
 const connectedMentors = {
