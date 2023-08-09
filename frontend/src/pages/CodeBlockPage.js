@@ -12,8 +12,6 @@ const CodeBlockPage = () => {
   const [isStudent, setIsStudent] = useState(false);
 
   useEffect(() => {
-    // Get data code by id from the server using Axios
-    console.log(id);
     axios
       .get(`http://localhost:8000/code/${id}`)
       .then((response) => {
@@ -23,15 +21,19 @@ const CodeBlockPage = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-    socket && socket.emit("join", { id: id });
+  }, []);
 
+  useEffect(() => {
+    // Get data code by id from the server using Axios
+    if (!socket) return;
+    socket.emit("join", { id: id });
+
+    socket.on("role", ({ isMentor }) => setIsStudent(!isMentor));
     return () => {
       socket?.emit("leave", { id: id });
       console.log("leave");
     };
   }, [socket]);
-
-  socket.on("role", ({ isMentor }) => setIsStudent(!isMentor));
 
   ///send the new code
   const onCodeChange = (newCode) => {
