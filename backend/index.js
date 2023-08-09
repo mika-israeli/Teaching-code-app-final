@@ -12,42 +12,40 @@ const io = socketIO(server, {
     origin: "*",
   },
 });
-app.use(
-  cors({
-    origin: "*",
-  })
-);
-
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/code", codeRoutes);
 const PORT = 8000;
 const MAX_STUDENTS_PER_CLASS = 1;
 
 const whitelist = ["*"];
 
-app.use((req, res, next) => {
-  const origin = req.get("referer");
-  const isWhitelisted = whitelist.find((w) => origin && origin.includes(w));
-  if (isWhitelisted) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-    );
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "X-Requested-With,Content-Type,Authorization"
-    );
-    res.setHeader("Access-Control-Allow-Credentials", true);
-  }
-  // Pass to next layer of middleware
-  if (req.method === "OPTIONS") res.sendStatus(200);
-  else next();
-});
+// app.use((req, res, next) => {
+//   const origin = req.get("referer");
+//   const isWhitelisted = whitelist.find((w) => origin && origin.includes(w));
+//   if (isWhitelisted) {
+//     res.setHeader("Access-Control-Allow-Origin", "*");
+//     res.setHeader(
+//       "Access-Control-Allow-Methods",
+//       "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+//     );
+//     res.setHeader(
+//       "Access-Control-Allow-Headers",
+//       "X-Requested-With,Content-Type,Authorization"
+//     );
+//     res.setHeader("Access-Control-Allow-Credentials", true);
+//   }
+//   // Pass to next layer of middleware
+//   if (req.method === "OPTIONS") res.sendStatus(200);
+//   else next();
+// });
 
-const setContext = (req, res, next) => {
-  if (!req.context) req.context = {};
-  next();
-};
-app.use(setContext);
+// const setContext = (req, res, next) => {
+//   if (!req.context) req.context = {};
+//   next();
+// };
+// app.use(setContext);
 
 // Store the socket id of the mentor connected to each code block
 const connectedMentors = {
@@ -104,70 +102,67 @@ const removeClientFromClass = (codeBlockId, socketId) => {
   }
 };
 
-app.use(express.json());
-app.use("/code", codeRoutes);
+// // Socket.io connection event
+// io.on("connection", (socket) => {
+//   console.log("A new user connected");
 
-// Socket.io connection event
-io.on("connection", (socket) => {
-  console.log("A new user connected");
+//   socket.on("join", ({ id }) => {
+//     console.log("A user joined a room ", id);
+//     addClientToClass(id, socket.id);
+//     const isMentor = connectedMentors[id] === socket.id;
+//     socket.emit("role", { isMentor });
+//     isMentor &&
+//       io
+//         .to(connectedClients[id][0])
+//         .emit("mentorJoin", { message: "Mentor joined the room" });
 
-  socket.on("join", ({ id }) => {
-    console.log("A user joined a room ", id);
-    addClientToClass(id, socket.id);
-    const isMentor = connectedMentors[id] === socket.id;
-    socket.emit("role", { isMentor });
-    isMentor &&
-      io
-        .to(connectedClients[id][0])
-        .emit("mentorJoin", { message: "Mentor joined the room" });
+//     !isMentor &&
+//       io
+//         .to(connectedMentors[id])
+//         .emit("studentJoin", { message: "Student joined the room" });
+//   });
+//   // Handle socket events here
 
-    !isMentor &&
-      io
-        .to(connectedMentors[id])
-        .emit("studentJoin", { message: "Student joined the room" });
+//   socket.on("newCode", ({ id, code }) => {
+//     console.log("New code from client: ", code);
+//     // Send the new code to relevent Mentor
+//     const mentorSocketId = connectedMentors[id];
+//     io.to(mentorSocketId).emit("newCodeOfStudent", code);
+//   });
+
+//   socket.on("leave", ({ id }) => {
+//     console.log("A user left a room ", id);
+
+//     const isMentor = connectedMentors[id] === socket.id;
+//     isMentor &&
+//       io
+//         .to(connectedClients[id][0])
+//         .emit("mentorLeave", { message: "Mentor left the room" });
+
+//     !isMentor &&
+//       io
+//         .to(connectedMentors[id])
+//         .emit("studentLeave", { message: "Student left the room" });
+//     removeClientFromClass(id, socket.id);
+//   });
+
+//   socket.on("disconnect", () => {
+//     console.log("A user disconnected");
+//   });
+// });
+
+mongoose
+  .connect(
+    "mongodb+srv://mika80666:iL30iQ2Y2R166ODw@cluster0.6skunbx.mongodb.net/?retryWrites=true&w=majority",
+    { useNewUrlParser: true }
+  )
+  .then(() => {
+    console.log("Connected to MongoDB successfully");
+    server.listen(PORT, async () => {
+      try {
+        console.log(`Server running on port ${PORT}`);
+      } catch (error) {
+        console.log(error);
+      }
+    });
   });
-  // Handle socket events here
-
-  socket.on("newCode", ({ id, code }) => {
-    console.log("New code from client: ", code);
-    // Send the new code to relevent Mentor
-    const mentorSocketId = connectedMentors[id];
-    io.to(mentorSocketId).emit("newCodeOfStudent", code);
-  });
-
-  socket.on("leave", ({ id }) => {
-    console.log("A user left a room ", id);
-
-    const isMentor = connectedMentors[id] === socket.id;
-    isMentor &&
-      io
-        .to(connectedClients[id][0])
-        .emit("mentorLeave", { message: "Mentor left the room" });
-
-    !isMentor &&
-      io
-        .to(connectedMentors[id])
-        .emit("studentLeave", { message: "Student left the room" });
-    removeClientFromClass(id, socket.id);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
-});
-
-server.listen(PORT, async () => {
-  try {
-    console.log(`Server running on port ${PORT}`);
-    mongoose
-      .connect(
-        "mongodb+srv://mika80666:iL30iQ2Y2R166ODw@cluster0.6skunbx.mongodb.net/?retryWrites=true&w=majority",
-        { useNewUrlParser: true }
-      )
-      .then(() => {
-        console.log("Connected to MongoDB successfully");
-      });
-  } catch (error) {
-    console.log(error);
-  }
-});
