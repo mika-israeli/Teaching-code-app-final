@@ -13,9 +13,7 @@ const CodeBlockPage = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `https://teaching-code-app-final-server-mika-israeli.vercel.app/code/${id}`
-      )
+      .get(`http://localhost:8000/code/${id}`)
       .then((response) => {
         console.log("Data fetched: ", response.data);
         setCode(response.data);

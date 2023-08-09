@@ -1,7 +1,7 @@
 const express = require("express"); //express server
 const http = require("http");
 const mongoose = require("mongoose");
-const socketIO = require("socket.io");
+// const socketIO = require("socket.io");
 // const { connectToMongo } = require("./db");
 const codeRoutes = require("./routes/codeRouter");
 const cors = require("cors");
@@ -153,16 +153,11 @@ const removeClientFromClass = (codeBlockId, socketId) => {
 
 mongoose
   .connect(
-    "mongodb+srv://mika80666:iL30iQ2Y2R166ODw@cluster0.6skunbx.mongodb.net/?retryWrites=true&w=majority",
-    { useNewUrlParser: true }
+    "mongodb+srv://mika80666:iL30iQ2Y2R166ODw@cluster0.6skunbx.mongodb.net/?retryWrites=true&w=majority"
   )
   .then(() => {
     console.log("Connected to MongoDB successfully");
-    server.listen(PORT, async () => {
-      try {
-        console.log(`Server running on port ${PORT}`);
-      } catch (error) {
-        console.log(error);
-      }
+    server.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
   });
