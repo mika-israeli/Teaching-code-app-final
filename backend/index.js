@@ -14,8 +14,36 @@ const io = socketIO(server, {
   },
 });
 
-const PORT = process.env.PORT || 8000;
+const PORT = 8000;
 const MAX_STUDENTS_PER_CLASS = 1;
+
+const whitelist = ["*"];
+
+// app.use((req, res, next) => {
+//   const origin = req.get("referer");
+//   const isWhitelisted = whitelist.find((w) => origin && origin.includes(w));
+//   if (isWhitelisted) {
+//     res.setHeader("Access-Control-Allow-Origin", "*");
+//     res.setHeader(
+//       "Access-Control-Allow-Methods",
+//       "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+//     );
+//     res.setHeader(
+//       "Access-Control-Allow-Headers",
+//       "X-Requested-With,Content-Type,Authorization"
+//     );
+//     res.setHeader("Access-Control-Allow-Credentials", true);
+//   }
+//   // Pass to next layer of middleware
+//   if (req.method === "OPTIONS") res.sendStatus(200);
+//   else next();
+// });
+
+// const setContext = (req, res, next) => {
+//   if (!req.context) req.context = {};
+//   next();
+// };
+// app.use(setContext);
 
 // Store the socket id of the mentor connected to each code block
 const connectedMentors = {
@@ -122,14 +150,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("A user disconnected");
   });
-});
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "../frontend/build/index.html"),
-    function (err) {
-      if (err) {
-        res.status(500).send(err);
-      }
-    };
 });
 
 server.listen(PORT, async () => {
