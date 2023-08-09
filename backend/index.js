@@ -6,7 +6,11 @@ const socketIO = require("socket.io");
 const codeRoutes = require("./routes/codeRouter");
 const cors = require("cors");
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 const server = http.createServer(app); //http server with express app
 const io = socketIO(server, {
   cors: {

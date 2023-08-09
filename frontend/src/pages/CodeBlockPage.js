@@ -13,7 +13,7 @@ const CodeBlockPage = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/code/${id}`)
+      .get(`https://code-app-server.vercel.app/code/${id}`)
       .then((response) => {
         console.log("Data fetched: ", response.data);
         setCode(response.data);
