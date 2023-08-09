@@ -1,7 +1,7 @@
 const express = require("express"); //express server
 const http = require("http");
 const mongoose = require("mongoose");
-// const socketIO = require("socket.io");
+const socketIO = require("socket.io");
 // const { connectToMongo } = require("./db");
 const codeRoutes = require("./routes/codeRouter");
 const cors = require("cors");
