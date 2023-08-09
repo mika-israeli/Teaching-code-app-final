@@ -9,7 +9,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use("/code", codeRoutes);
 const PORT = 8000;
 const MAX_STUDENTS_PER_CLASS = 1;
