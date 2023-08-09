@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import "../css/code.css";
 import SmileyFace from "./SmileyFace";
 import useSock from "./UseSock";
-import CodeMirror from "@uiw/react-codemirror";
+// import { Controlled as CodeMirror } from "react-codemirror2";
+
 import { javascript } from "@codemirror/lang-javascript";
 
 function Code({ id, isStudent, code, onCodeChange }) {
@@ -54,7 +55,7 @@ function Code({ id, isStudent, code, onCodeChange }) {
       <h1>The subject of the lesson is:{code.title}</h1>
       <h2>Hey i am the : {isStudent ? "Student" : "Mentor "}</h2>
       {isCodeCorrect && isStudent && <SmileyFace />}
-      <CodeMirror
+      {/* <CodeMirror
         className="code-mirror"
         value={newCode}
         height="200px"
@@ -64,7 +65,7 @@ function Code({ id, isStudent, code, onCodeChange }) {
           setNewCode(value);
         }}
         editable={isStudent}
-      />
+      /> */}
       {isStudent ? <button onClick={handleSubmit}>Save</button> : null}
 
       {isMentorLeft && <h3>The mentor left the room!</h3>}
