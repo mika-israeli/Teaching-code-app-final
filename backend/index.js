@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/code", codeRoutes);
-const PORT = process.env.PORT || 8000;
+const PORT = 8000;
 const MAX_STUDENTS_PER_CLASS = 1;
 
 const whitelist = ["*"];
