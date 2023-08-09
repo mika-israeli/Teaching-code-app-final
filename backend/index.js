@@ -3,24 +3,25 @@ const http = require("http");
 const mongoose = require("mongoose");
 const socketIO = require("socket.io");
 // const { connectToMongo } = require("./db");
-const codeRoutes = require("./routes/codeRouter");
+// const codeRoutes = require("./routes/codeRouter");
 const cors = require("cors");
 const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+// app.use("/code", codeRoutes);
+const PORT = 8000;
+const MAX_STUDENTS_PER_CLASS = 1;
+
+const whitelist = ["*"];
+
 const server = http.createServer(app); //http server with express app
 const io = socketIO(server, {
   cors: {
     origin: "*",
   },
 });
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use("/code", codeRoutes);
-const PORT = 8000;
-const MAX_STUDENTS_PER_CLASS = 1;
-
-const whitelist = ["*"];
 
 // app.use((req, res, next) => {
 //   const origin = req.get("referer");
