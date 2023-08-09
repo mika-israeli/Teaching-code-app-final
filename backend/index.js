@@ -3,7 +3,7 @@ const http = require("http");
 const mongoose = require("mongoose");
 const socketIO = require("socket.io");
 // const { connectToMongo } = require("./db");
-// const codeRoutes = require("./routes/codeRouter");
+const codeRoutes = require("./routes/codeRouter");
 const cors = require("cors");
 const app = express();
 
