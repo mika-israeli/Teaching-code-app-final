@@ -104,54 +104,54 @@ const removeClientFromClass = (codeBlockId, socketId) => {
   }
 };
 
-// // Socket.io connection event
-// io.on("connection", (socket) => {
-//   console.log("A new user connected");
+// Socket.io connection event
+io.on("connection", (socket) => {
+  console.log("A new user connected");
 
-//   socket.on("join", ({ id }) => {
-//     console.log("A user joined a room ", id);
-//     addClientToClass(id, socket.id);
-//     const isMentor = connectedMentors[id] === socket.id;
-//     socket.emit("role", { isMentor });
-//     isMentor &&
-//       io
-//         .to(connectedClients[id][0])
-//         .emit("mentorJoin", { message: "Mentor joined the room" });
+  socket.on("join", ({ id }) => {
+    console.log("A user joined a room ", id);
+    addClientToClass(id, socket.id);
+    const isMentor = connectedMentors[id] === socket.id;
+    socket.emit("role", { isMentor });
+    isMentor &&
+      io
+        .to(connectedClients[id][0])
+        .emit("mentorJoin", { message: "Mentor joined the room" });
 
-//     !isMentor &&
-//       io
-//         .to(connectedMentors[id])
-//         .emit("studentJoin", { message: "Student joined the room" });
-//   });
-//   // Handle socket events here
+    !isMentor &&
+      io
+        .to(connectedMentors[id])
+        .emit("studentJoin", { message: "Student joined the room" });
+  });
+  // Handle socket events here
 
-//   socket.on("newCode", ({ id, code }) => {
-//     console.log("New code from client: ", code);
-//     // Send the new code to relevent Mentor
-//     const mentorSocketId = connectedMentors[id];
-//     io.to(mentorSocketId).emit("newCodeOfStudent", code);
-//   });
+  socket.on("newCode", ({ id, code }) => {
+    console.log("New code from client: ", code);
+    // Send the new code to relevent Mentor
+    const mentorSocketId = connectedMentors[id];
+    io.to(mentorSocketId).emit("newCodeOfStudent", code);
+  });
 
-//   socket.on("leave", ({ id }) => {
-//     console.log("A user left a room ", id);
+  socket.on("leave", ({ id }) => {
+    console.log("A user left a room ", id);
 
-//     const isMentor = connectedMentors[id] === socket.id;
-//     isMentor &&
-//       io
-//         .to(connectedClients[id][0])
-//         .emit("mentorLeave", { message: "Mentor left the room" });
+    const isMentor = connectedMentors[id] === socket.id;
+    isMentor &&
+      io
+        .to(connectedClients[id][0])
+        .emit("mentorLeave", { message: "Mentor left the room" });
 
-//     !isMentor &&
-//       io
-//         .to(connectedMentors[id])
-//         .emit("studentLeave", { message: "Student left the room" });
-//     removeClientFromClass(id, socket.id);
-//   });
+    !isMentor &&
+      io
+        .to(connectedMentors[id])
+        .emit("studentLeave", { message: "Student left the room" });
+    removeClientFromClass(id, socket.id);
+  });
 
-//   socket.on("disconnect", () => {
-//     console.log("A user disconnected");
-//   });
-// });
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+  });
+});
 
 mongoose
   .connect(
